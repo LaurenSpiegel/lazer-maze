@@ -1,0 +1,39 @@
+#! /usr/local/bin/node
+
+
+ 
+var fs = require('fs');
+var makeBoard = require('./makeBoard');
+var runMaze = require('./runMaze');
+
+if (process.argv.length !== 4) {
+    console.error('Require input file name and output file name');
+    process.exit(1);
+}
+
+var input = process.argv[2];
+var output = process.argv[3];
+
+
+fs.readFile(input, 'utf-8', function (err, text) {
+    if (err) throw err;
+
+    var array = text.split('\n');
+    var boardWidth = Number(array[0][0]);
+    var boardHeight = Number(array[0][2]);
+
+    var board = makeBoard(array, boardWidth, boardHeight);
+
+    var playerStartXCoord = Number(array[1][0]);
+
+    //Switch Cartesian coordinates to array coordinates by subtracting Cartesian y-coord from boardHeight minus 1
+    var playerStartYCoord = boardHeight - (Number(array[1][2]) + 1);
+    var playerDirection = array[1][4];
+
+    var result = runMaze(board, boardWidth, boardHeight, playerStartXCoord, playerStartYCoord, playerDirection);
+
+
+    fs.writeFile(output, result, function (err) {
+        if (err) throw err;
+    });
+});
