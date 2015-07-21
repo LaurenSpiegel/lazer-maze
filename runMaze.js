@@ -1,6 +1,8 @@
 
 'use strict';
 
+var changeDirection = require('./changeDirection');
+
 module.exports = function(board, boardWidth, boardHeight, playerStartXCoord, playerStartYCoord, playerDirection) {
 
   var totalSquares = 0;
@@ -13,55 +15,20 @@ module.exports = function(board, boardWidth, boardHeight, playerStartXCoord, pla
     var newDirection = direction;
     var newX = playerXCoord;
     var newY = playerYCoord;
+    var currentSquare = board[playerYCoord][playerXCoord];
 
 
     //Check to see if have a loop and if so return -1 for totalSquares
 
-    if(board[playerYCoord][playerXCoord] === 1){
+    if(currentSquare === 1){
       totalSquares = -1;
       return;
     }
 
-    //Check to see if hit forwardSlash mirror and if so change direction
+    //Check to see if hit mirror and if so change direction
 
-    if(board[playerYCoord][playerXCoord] === "/"){
-      if(direction === "S"){
-        newDirection = "W";
-      }
-
-      if(direction === "N"){
-        newDirection = "E";
-      }
-
-      if(direction === "E"){
-        newDirection = "N";
-      }
-
-      if(direction === "W"){
-        newDirection = "S";
-      }
-
-    }
-
-    //Check to see if hit backSlash mirror and if so change direction
-
-    if(board[playerYCoord][playerXCoord] === "\\"){
-      if(direction === "S"){
-        newDirection = "E";
-      }
-
-      if(direction === "N"){
-        newDirection = "W";
-      }
-
-      if(direction === "E"){
-        newDirection = "S";
-      }
-
-      if(direction === "W"){
-        newDirection = "N";
-      }
-
+    if(currentSquare === "/" || currentSquare === "\\"){
+      newDirection = changeDirection(direction, board[playerYCoord][playerXCoord]);
     }
 
 
@@ -98,7 +65,7 @@ module.exports = function(board, boardWidth, boardHeight, playerStartXCoord, pla
 
     totalSquares++;
 
-    //Toggle current square to 1 so know visited
+    //Change current square to 1 so know visited
 
     board[playerYCoord][playerXCoord] = 1;
 
@@ -115,7 +82,7 @@ module.exports = function(board, boardWidth, boardHeight, playerStartXCoord, pla
 
   //Build output string
 
-  var finalString= totalSquares + "\n" + endXCoord + " " + endYCoord;
+  var finalString = totalSquares + "\n" + endXCoord + " " + endYCoord;
 
   return finalString;
 };
